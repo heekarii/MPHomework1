@@ -3,12 +3,16 @@
 void prob1(IplImage* src);
 void prob2(IplImage* src);
 void prob3(IplImage* src);
+void prob4(IplImage* src);
+void prob5(IplImage* src);
 
 int main() {
 	IplImage* src = cvLoadImage("c:\\temp\\sejong_small.jpg");
 	prob1(src);
 	prob2(src);
 	prob3(src);
+	prob4(src);
+	prob5(src);
 	cvShowImage("src", src);
 	cvWaitKey();
 
@@ -53,20 +57,65 @@ void prob3(IplImage* src) {
 			int bri = (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
 			for (int k = 0; k < 3; k++)
 				grey.val[k] = bri;
-			cvSet2D(tar, y, x, grey);
+			// normalized coordinate
+			float dx = 2 * (float)x / src->width - 1; 
+			float dy = 2 * (float)y / src->height - 1;
+			dx = abs(dx);
+			dy = abs(dy);
+			// 중심부터 거리 1 이상이면 흑백
+			if (dx + dy > 1) cvSet2D(tar, y, x, grey);
+			else cvSet2D(tar, y, x, ref);
 		}
 	}
+	//cvShowImage("prob-3", tar);
+}
 
-	float lean = (float)(src->width / 2) / (src->height / 2);
-	int cp = 0;
-	bool isCrossed = false;
+void prob4(IplImage* src) {
+	IplImage* tar = cvCreateImage(cvGetSize(src), 8, 3);
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
-			
-			if (isCrossed) continue;
-			
+			CvScalar ref = cvGet2D(src, y, x);
+			// greyscale
+			CvScalar grey;
+			int bri = (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
+			for (int k = 0; k < 3; k++)
+				grey.val[k] = bri;
+			// normalized coordinate
+			float dx = 2 * (float)x / src->width - 1;
+			float dy = 2 * (float)y / src->height - 1;
+			dx = abs(dx);
+			dy = abs(dy);
+			// 중심부터 거리 1 이상이면 흑백
+			if (sqrt(dx * dx + dy * dy) > 1) cvSet2D(tar, y, x, grey);
+			else cvSet2D(tar, y, x, ref);
 		}
 	}
+	//cvShowImage("prob-4", tar);
+}
 
-	cvShowImage("prob-3", tar);
+void prob5(IplImage* src) {
+	IplImage* tar = cvCreateImage(cvGetSize(src), 8, 3);
+
+	for (int y = 0; y < src->height; y++) {
+		for (int x = 0; x < src->width; x++) {
+			CvScalar ref = cvGet2D(src, y, x);
+			float dx = 2 * (float)x / src->width - 1;
+			float dy = 2 * (float)y / src->height - 1;
+
+			dx = abs(dx);
+			dy = abs(dy);
+
+			if (sqrt(dx * dx + dy * dy) > sin(x)  &&
+				sqrt(dx * dx + dy * dy) < sin(x) + 0.01)
+			{
+				cvSet2D(tar, y, x, cvScalar(0, 0, 0));	
+			}
+			else 
+			{
+				cvSet2D(tar, y, x, ref);
+			}
+		}
+	}
+	
+	cvShowImage("prob-5", tar);
 }
