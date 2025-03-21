@@ -77,7 +77,7 @@ void prob4(IplImage* src) {
 			CvScalar ref = cvGet2D(src, y, x);
 			// greyscale
 			CvScalar grey;
-			int bri = (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
+			int bri		= (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
 			for (int k = 0; k < 3; k++)
 				grey.val[k] = bri;
 			// normalized coordinate
@@ -99,23 +99,21 @@ void prob5(IplImage* src) {
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
 			CvScalar ref = cvGet2D(src, y, x);
-			float dx = 2 * (float)x / src->width - 1;
-			float dy = 2 * (float)y / src->height - 1;
+			float dx = 2 * (float)(x - 1) / src->width - 1;
+			float dy = 2 * (float)(y - 1) / src->height - 1;
 
 			dx = abs(dx);
 			dy = abs(dy);
 
-			if (sqrt(dx * dx + dy * dy) > sin(x)  &&
-				sqrt(dx * dx + dy * dy) < sin(x) + 0.01)
-			{
-				cvSet2D(tar, y, x, cvScalar(0, 0, 0));	
-			}
-			else 
-			{
+			float dist = sqrt(dx * dx + dy * dy);
+
+			if ((int)(dist * 10) % 2 == 0) {
 				cvSet2D(tar, y, x, ref);
+			}
+			else {
+				cvSet2D(tar, y, x, cvScalar(0, 0, 0));
 			}
 		}
 	}
-	
-	cvShowImage("prob-5", tar);
+	//cvShowImage("prob-5", tar);
 }
