@@ -5,14 +5,17 @@ void prob2(IplImage* src);
 void prob3(IplImage* src);
 void prob4(IplImage* src);
 void prob5(IplImage* src);
+void prob6(IplImage* src);
 
 int main() {
 	IplImage* src = cvLoadImage("c:\\temp\\sejong_small.jpg");
-	prob1(src);
+	/*prob1(src);
 	prob2(src);
 	prob3(src);
 	prob4(src);
 	prob5(src);
+	*/
+	prob6(src);
 	cvShowImage("src", src);
 	cvWaitKey();
 
@@ -27,7 +30,7 @@ void prob1(IplImage* src) {
 			cvSet2D(tar, tar->height - y - 1, tar->width - x - 1, ref);
 		}
 	}
-	//cvShowImage("prob-1", tar);
+	cvShowImage("prob-2", tar);
 }
 
 void prob2(IplImage* src) {
@@ -44,7 +47,7 @@ void prob2(IplImage* src) {
 			}
 		}
 	}
-	//cvShowImage("prob-1", tar);
+	cvShowImage("prob-1", tar);
 }
 
 void prob3(IplImage* src) {
@@ -67,7 +70,7 @@ void prob3(IplImage* src) {
 			else cvSet2D(tar, y, x, ref);
 		}
 	}
-	//cvShowImage("prob-3", tar);
+	cvShowImage("prob-3", tar);
 }
 
 void prob4(IplImage* src) {
@@ -77,7 +80,7 @@ void prob4(IplImage* src) {
 			CvScalar ref = cvGet2D(src, y, x);
 			// greyscale
 			CvScalar grey;
-			int bri		= (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
+			int bri	= (ref.val[0] + ref.val[1] + ref.val[2]) / 3;
 			for (int k = 0; k < 3; k++)
 				grey.val[k] = bri;
 			// normalized coordinate
@@ -90,7 +93,7 @@ void prob4(IplImage* src) {
 			else cvSet2D(tar, y, x, ref);
 		}
 	}
-	//cvShowImage("prob-4", tar);
+	cvShowImage("prob-4", tar);
 }
 
 void prob5(IplImage* src) {
@@ -99,12 +102,10 @@ void prob5(IplImage* src) {
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
 			CvScalar ref = cvGet2D(src, y, x);
-			float dx = 2 * (float)(x - 1) / src->width - 1;
-			float dy = 2 * (float)(y - 1) / src->height - 1;
+			float dx = 2 * (float)x / (src->width - 1);
+			float dy = 2 * (float)y / (src->height - 1);
 
-			dx = abs(dx);
-			dy = abs(dy);
-
+			
 			float dist = sqrt(dx * dx + dy * dy);
 
 			if ((int)(dist * 10) % 2 == 0) {
@@ -115,5 +116,27 @@ void prob5(IplImage* src) {
 			}
 		}
 	}
-	//cvShowImage("prob-5", tar);
+	cvShowImage("prob-5", tar);
+}
+
+void prob6(IplImage* src) {
+	IplImage* tar = cvCreateImage(cvGetSize(src), 8, 3);
+	
+	for (int y = 0; y < src->height; y++) {
+		for (int x = 0; x < src->width; x++) {
+			CvScalar ref = cvGet2D(src, y, x);
+			float dx = (float)x / (src->width - 1);
+			float dy = (float)y / (src->height - 1);
+
+			if ((int)(dx * 10) % 2 == 0 && (int)(dy * 10) % 2 != 0 || (int)(dx * 10) % 2 != 0 && (int)(dy * 10) % 2 == 0) {
+				cvSet2D(tar, y, x, ref);
+			}
+			else {
+				cvSet2D(tar, y, x, cvScalar(0, 0, 0));
+			}
+			
+		}
+	}
+
+	cvShowImage("prob-6", tar);
 }
