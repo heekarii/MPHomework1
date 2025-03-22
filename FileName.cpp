@@ -9,12 +9,11 @@ void prob6(IplImage* src);
 
 int main() {
 	IplImage* src = cvLoadImage("c:\\temp\\sejong_small.jpg");
-	/*prob1(src);
+	prob1(src);
 	prob2(src);
 	prob3(src);
 	prob4(src);
 	prob5(src);
-	*/
 	prob6(src);
 	cvShowImage("src", src);
 	cvWaitKey();
@@ -27,10 +26,10 @@ void prob1(IplImage* src) {
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
 			CvScalar ref = cvGet2D(src, y, x);
-			cvSet2D(tar, tar->height - y - 1, tar->width - x - 1, ref);
+			cvSet2D(tar, tar->height - y - 1, x, ref);
 		}
 	}
-	cvShowImage("prob-2", tar);
+	cvShowImage("prob-1", tar);
 }
 
 void prob2(IplImage* src) {
@@ -47,7 +46,7 @@ void prob2(IplImage* src) {
 			}
 		}
 	}
-	cvShowImage("prob-1", tar);
+	cvShowImage("prob-2", tar);
 }
 
 void prob3(IplImage* src) {
@@ -102,8 +101,8 @@ void prob5(IplImage* src) {
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
 			CvScalar ref = cvGet2D(src, y, x);
-			float dx = 2 * (float)x / (src->width - 1);
-			float dy = 2 * (float)y / (src->height - 1);
+			float dx = 2 * (float)x / (src->width)-1;
+			float dy = 2 * (float)y / (src->height)-1;
 
 			
 			float dist = sqrt(dx * dx + dy * dy);
@@ -125,8 +124,8 @@ void prob6(IplImage* src) {
 	for (int y = 0; y < src->height; y++) {
 		for (int x = 0; x < src->width; x++) {
 			CvScalar ref = cvGet2D(src, y, x);
-			float dx = (float)x / (src->width - 1);
-			float dy = (float)y / (src->height - 1);
+			float dx = (float)x / (src->width);
+			float dy = (float)y / (src->height);
 
 			if ((int)(dx * 10) % 2 == 0 && (int)(dy * 10) % 2 != 0 || (int)(dx * 10) % 2 != 0 && (int)(dy * 10) % 2 == 0) {
 				cvSet2D(tar, y, x, ref);
@@ -134,7 +133,6 @@ void prob6(IplImage* src) {
 			else {
 				cvSet2D(tar, y, x, cvScalar(0, 0, 0));
 			}
-			
 		}
 	}
 
